@@ -37,7 +37,7 @@ class UserResponse(BaseModel):
     """Safe user representation returned by the API. Never includes the password."""
 
     id: str
-    full_name: str
+    full_name: str | None = None
     email: EmailStr
     created_at: datetime
 

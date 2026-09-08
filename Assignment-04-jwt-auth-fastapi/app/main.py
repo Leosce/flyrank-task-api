@@ -5,8 +5,6 @@ Wires together routers and centralized exception handling.
 Run with:  uvicorn app.main:app --reload
 """
 import logging
-from contextlib import asynccontextmanager
-
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -18,24 +16,16 @@ from app.core.exceptions import (
     UnauthorizedError,
     ValidationError,
 )
-from app.database import init_db
 from app.routes import auth as auth_routes
 from app.routes import users as user_routes
 
 logger = logging.getLogger("app")
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    init_db()  # create tables on startup
-    yield
-
-
 app = FastAPI(
-    title="JWT Auth API",
-    description="Minimal, production-style JWT authentication for FastAPI.",
+    title="Supabase Auth API",
+    description="FastAPI routes backed by Supabase Auth and Supabase JWT validation.",
     version="1.0.0",
-    lifespan=lifespan,
 )
 
 

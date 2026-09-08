@@ -10,17 +10,13 @@ just declares `current_user: User = Depends(get_current_user)` and gets:
 
 No route or controller re-implements any of this logic.
 """
-import jwt
-from fastapi import Depends, Request
-from sqlalchemy.orm import Session
+from fastapi import Request
 
 from app.core.exceptions import UnauthorizedError
-from app.database import get_db
-from app.models.user import User
-from app.utils.security import decode_access_token
+from app.services.supabase_auth import get_user
 
 
-def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
+def get_current_user(request: Request) -> dict:
     auth_header = request.headers.get("Authorization")
 
     if not auth_header:
@@ -32,19 +28,4 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
 
     token = parts[1]
 
-    try:
-        payload = decode_access_token(token)
-    except jwt.ExpiredSignatureError:
-        raise UnauthorizedError("Token has expired")
-    except jwt.InvalidTokenError:
-        raise UnauthorizedError("Invalid token")
-
-    user_id = payload.get("sub")
-    if user_id is None:
-        raise UnauthorizedError("Invalid token payload")
-
-    user = db.query(User).filter(User.id == user_id).first()
-    if user is None:
-        raise UnauthorizedError("User for this token no longer exists")
-
-    return user
+    return get_user(token)

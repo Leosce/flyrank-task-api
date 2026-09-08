@@ -16,4 +16,4 @@ class TokenResponse(BaseModel):
 
     access_token: str
     token_type: str = "bearer"
-    expires_in_minutes: int
+    expires_in: int | None = None
