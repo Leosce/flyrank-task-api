@@ -11,7 +11,7 @@ _next_task_id = 1
 def get_task_or_404(task_id: int) -> Task:
     task = next((item for item in _tasks if item.id == task_id), None)
     if task is None:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
     return task
 
 
@@ -37,6 +37,8 @@ def create_task(payload: TaskCreate) -> Task:
 @router.put("/{task_id}", response_model=TaskResponse, summary="Update a task")
 def update_task(task_id: int, payload: TaskUpdate) -> Task:
     task = get_task_or_404(task_id)
+    if payload.title is None and payload.done is None:
+        raise HTTPException(status_code=400, detail="Provide title and/or done to update a task")
     if payload.title is not None:
         task.title = payload.title.strip()
     if payload.done is not None:

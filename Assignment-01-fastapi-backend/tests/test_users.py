@@ -24,3 +24,13 @@ def test_task_lifecycle() -> None:
 
 def test_health_check() -> None:
     assert client.get("/health").json() == {"status": "ok"}
+
+
+def test_invalid_task_bodies_return_assignment_400_contract() -> None:
+    assert client.post("/tasks", json={}).status_code == 400
+    assert client.post("/tasks", json={"title": "   "}).status_code == 400
+    created = client.post("/tasks", json={"title": "Keep testing"}).json()
+    assert client.put(f"/tasks/{created['id']}", json={}).status_code == 400
+    missing = client.get("/tasks/99999")
+    assert missing.status_code == 404
+    assert missing.json() == {"error": "Task 99999 not found"}
