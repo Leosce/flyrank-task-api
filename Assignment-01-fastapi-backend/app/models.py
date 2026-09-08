@@ -2,10 +2,9 @@ from dataclasses import dataclass
 
 
 @dataclass
-class User:
-    """The in-memory representation of a user."""
+class Task:
+    """A task held only for the lifetime of the API process."""
 
     id: int
-    name: str
-    email: str
-    age: int | None = None
+    title: str
+    done: bool = False

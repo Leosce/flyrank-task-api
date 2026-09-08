@@ -5,21 +5,21 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_user_lifecycle() -> None:
+def test_task_lifecycle() -> None:
     create_response = client.post(
-        "/users",
-        json={"name": "Ada Lovelace", "email": "ada@example.com", "age": 36},
+        "/tasks",
+        json={"title": "Write assignment evidence"},
     )
     assert create_response.status_code == 201
     user_id = create_response.json()["id"]
 
-    assert client.get(f"/users/{user_id}").status_code == 200
+    assert client.get(f"/tasks/{user_id}").status_code == 200
     assert client.put(
-        f"/users/{user_id}",
-        json={"name": "Ada Byron", "email": "ada@example.com", "age": 36},
+        f"/tasks/{user_id}",
+        json={"title": "Write assignment evidence", "done": True},
     ).status_code == 200
-    assert client.delete(f"/users/{user_id}").status_code == 204
-    assert client.get(f"/users/{user_id}").status_code == 404
+    assert client.delete(f"/tasks/{user_id}").status_code == 204
+    assert client.get(f"/tasks/{user_id}").status_code == 404
 
 
 def test_health_check() -> None:
