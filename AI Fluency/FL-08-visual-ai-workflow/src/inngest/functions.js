@@ -4,22 +4,67 @@ import { inngest } from "@/inngest/client";
 import { appendRunStep, failRun, finishRun, markRunRunning } from "@/lib/run-store";
 import { findOutgoingEdge } from "@/lib/workflow";
 
-async function decide(prompt) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error("OPENAI_API_KEY is not configured.");
+const decisionInstruction = "Return exactly one token: YES or NO. Do not add punctuation or explanation.";
 
+function normalizeDecision(answer) {
+  const decision = answer?.trim().toUpperCase();
+  if (decision !== "YES" && decision !== "NO") {
+    throw new Error("The AI provider did not return YES or NO.");
+  }
+
+  return decision;
+}
+
+async function decideWithGemini(prompt, apiKey) {
+  const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: decisionInstruction }] },
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0, maxOutputTokens: 3 },
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`Gemini request failed (${response.status}): ${details}`);
+  }
+
+  const payload = await response.json();
+  return normalizeDecision(payload.candidates?.[0]?.content?.parts?.[0]?.text);
+}
+
+async function decideWithOpenAI(prompt, apiKey) {
   const client = new OpenAI({ apiKey });
   const completion = await client.chat.completions.create({
     model: process.env.OPENAI_MODEL || "gpt-4o-mini",
     temperature: 0,
     messages: [
-      { role: "system", content: "Return exactly one token: YES or NO. Do not add punctuation or explanation." },
+      { role: "system", content: decisionInstruction },
       { role: "user", content: prompt },
     ],
   });
-  const answer = completion.choices[0]?.message?.content?.trim().toUpperCase();
-  if (answer !== "YES" && answer !== "NO") throw new Error("The model did not return YES or NO.");
-  return answer;
+  return normalizeDecision(completion.choices[0]?.message?.content);
+}
+
+async function decide(prompt) {
+  if (process.env.GEMINI_API_KEY) {
+    return decideWithGemini(prompt, process.env.GEMINI_API_KEY);
+  }
+
+  if (process.env.OPENAI_API_KEY) {
+    return decideWithOpenAI(prompt, process.env.OPENAI_API_KEY);
+  }
+
+  throw new Error("Configure GEMINI_API_KEY or OPENAI_API_KEY before executing a workflow.");
 }
 
 export const executeWorkflow = inngest.createFunction(

@@ -2,6 +2,10 @@ __pycache__/
 *.pyc
 .env
 .venv/
+__pycache__/
+scraper/cache/
+scraper/output/
+.venv/
 venv/
 *.egg-info/
 .pytest_cache/

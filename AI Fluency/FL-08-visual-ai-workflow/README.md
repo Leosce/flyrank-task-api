@@ -1,13 +1,13 @@
 # Decision Flow Studio
 
-A visual AI workflow editor for branching YES/NO decisions. The frontend uses React Flow to create and connect nodes; Inngest executes every node as a durable step; OpenAI supplies the decision and must return exactly `YES` or `NO`.
+A visual AI workflow editor for branching YES/NO decisions. The frontend uses React Flow to create and connect nodes; Inngest executes every node as a durable step; Gemini supplies the decision by default and must return exactly `YES` or `NO`.
 
 ## Features
 
 - React Flow canvas with editable decision nodes and dedicated YES/NO source handles
 - Local workflow state, browser save/load, and JSON import/export
 - Inngest-backed execution with one durable step per node
-- Strict OpenAI decision parsing, retries, visible errors, and loop protection
+- Strict Gemini or OpenAI decision parsing, retries, visible errors, and loop protection
 - Execution log, active-node styling, and animated active edges
 
 ## Setup
@@ -24,7 +24,7 @@ In a second terminal, start the Inngest development server:
 npm run inngest
 ```
 
-Open `http://localhost:3000`, add your `OPENAI_API_KEY` to `.env.local`, and run a flow. The Inngest dev UI will connect to `http://localhost:3000/api/inngest`.
+Open `http://localhost:3000`, add your `GEMINI_API_KEY` (or optional `OPENAI_API_KEY`) to `.env.local`, and run a flow. The Inngest dev UI will connect to `http://localhost:3000/api/inngest`.
 
 ## Workflow behavior
 

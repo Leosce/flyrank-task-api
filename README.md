@@ -9,6 +9,9 @@ Backend, API, Docker, automation, and AI projects completed for the FlyRank inte
 | 01 | [FastAPI Users API](./Assignment-01-fastapi-backend) |
 | 02 | [Node.js Course Management API](./Assignment-02-node-express-course-project) |
 | A2 | [SQLite Task API](./Assignment-02-sqlite-task-api) |
+| A7 | [Inngest Background Report API](./Assignment-07-inngest-background-jobs) |
+| A8 | [PDF Report Generator](./Assignment-08-pdf-report-generator) |
+| A9 | [Polite Books Scraper](./Assignment-05-web-scrapper-fastapi) |
 | 03 | Node.js Express Course Project (Dockerized) |
 | 03b | FastAPI, PostgreSQL, and Docker |
 | 04 | JWT Authentication with FastAPI |
