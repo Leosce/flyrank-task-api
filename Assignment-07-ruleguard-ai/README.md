@@ -316,6 +316,8 @@ request returned HTTP 200 with `high` authorization risk, `requires_review: true
 and confidence `0.98`. The one evaluation mismatch is retained honestly for review;
 the result is not presented as a perfect score.
 
+![RuleGuard live Gemini assessment](docs/screenshots/ruleguard-real-gemini.png)
+
 ## Reliability strategy
 
 1. Pydantic validates the request before any model call (`RiskRequest`, 1-2000 chars).

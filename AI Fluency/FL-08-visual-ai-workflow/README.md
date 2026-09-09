@@ -55,3 +55,5 @@ The provider initially rejected the retired `gemini-2.0-flash` model. The projec
 For visual submission evidence, open the local app, run the two prompts above, and capture the completed execution log for each path. Keep credentials out of screenshots.
 
 ![Support path execution evidence](docs/screenshots/workflow-support-yes-no.png)
+
+![Sales path execution evidence](docs/screenshots/workflow-sales-no-yes.png)
