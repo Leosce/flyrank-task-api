@@ -11,6 +11,8 @@ The repository now contains the code and run instructions for the supplied backe
 
 ## 2. Run A7 in the Inngest dashboard
 
+Completed locally on 2026-09-09. The A7 README contains the real request IDs, statuses, durations, and dashboard outcomes. Repeat these steps only when you need fresh screenshots for a portal submission.
+
 1. In `Assignment-07-inngest-background-jobs`, create and activate a virtual environment, then run `pip install -r requirements.txt`.
 2. Terminal one: `uvicorn main:app --reload`.
 3. Terminal two: `inngest dev -u http://localhost:8000/api/inngest`.

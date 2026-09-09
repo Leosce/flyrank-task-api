@@ -1,7 +1,7 @@
 """Assignment A7: durable report generation with FastAPI and Inngest."""
 
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from uuid import uuid4
 
@@ -74,7 +74,7 @@ async def generate_report(ctx: inngest.Context) -> dict:
 
     try:
         await ctx.step.run("mark-running", lambda: update_report(report_id, status="running"))
-        await ctx.step.sleep("do-the-slow-work", "8s")
+        await ctx.step.sleep("do-the-slow-work", timedelta(seconds=8))
         content = await ctx.step.run("build-report", lambda: build_report(report["topic"]))
         await ctx.step.run("mark-done", lambda: update_report(report_id, status="done", content=content))
         return {"report_id": report_id, "status": "done"}
