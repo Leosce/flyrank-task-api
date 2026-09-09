@@ -12,3 +12,7 @@ uvicorn main:app --reload
 ```
 
 Open `http://127.0.0.1:8000/docs` to exercise the same `GET`, `POST`, `PUT`, and `DELETE /tasks` endpoints from A1. The generated `tasks.db` remains local and is intentionally ignored by Git.
+
+## Database evidence
+
+The SQLite database structure and `tasks` table are shown in [the DB Browser screenshot](docs/screenshots/a2-sqlite-database-viewer.png).

@@ -154,6 +154,10 @@ curl -X PUT http://localhost:8000/tasks/1 \
 curl -X DELETE http://localhost:8000/tasks/1
 ```
 
+## Database evidence
+
+The Docker PostgreSQL table and seeded rows are shown in [the database proof screenshot](docs/screenshots/a3-postgres-database-proof.png).
+
 ## File Map
 
 | File | Purpose |
