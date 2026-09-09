@@ -53,3 +53,5 @@ Verified locally on 2026-09-09 with Gemini `gemini-3.6-flash`, the Next.js app, 
 The provider initially rejected the retired `gemini-2.0-flash` model. The project now defaults to `gemini-3.6-flash`; the response budget is 64 tokens to leave room for the model's internal reasoning while the application still accepts only an exact `YES` or `NO` decision.
 
 For visual submission evidence, open the local app, run the two prompts above, and capture the completed execution log for each path. Keep credentials out of screenshots.
+
+![Support path execution evidence](docs/screenshots/workflow-support-yes-no.png)
