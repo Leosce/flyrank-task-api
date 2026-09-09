@@ -152,8 +152,8 @@ Edit `backend/.env`:
 | Variable | Meaning | Default |
 |---|---|---|
 | `GEMINI_API_KEY` | Your Gemini API key | *(empty — required for real calls)* |
-| `GEMINI_MODEL` | Chat model for judgements | `gemini-2.5-flash` |
-| `EMBEDDING_MODEL` | Embedding model for FAISS | `models/embedding-001` |
+| `GEMINI_MODEL` | Chat model for judgements | `gemini-flash-lite-latest` |
+| `EMBEDDING_MODEL` | Embedding model for FAISS | `models/gemini-embedding-001` |
 | `LLM_ENABLED` | Kill switch | `true` |
 | `LLM_STUB` | Stub mode | `0` |
 | `LLM_TIMEOUT_SECONDS` | Per-call timeout | `30` |
@@ -218,11 +218,16 @@ curl -X POST http://localhost:8000/api/v1/risk/judge \
   -d "{\"request\":\"Allow any logged-in user to delete another user's account.\"}"
 ```
 
-**Response — run the command above yourself and paste the real output here. The
-example below is the expected shape only, not an actual recorded run:**
+**Actual live response recorded on 2026-09-09:**
 
-```
-<PASTE ACTUAL RESPONSE JSON HERE>
+```json
+{
+  "risk_level": "high",
+  "category": "authorization",
+  "requires_review": true,
+  "confidence": 0.98,
+  "reason": "Allows any authenticated user to delete another user's account without verifying ownership or proper permissions, violating core authorization rules."
+}
 ```
 
 ### Invalid request (rejected before any model call)
@@ -265,11 +270,10 @@ pytest tests/test_rag.py -v              # loader -> splitter -> FAISS build/sav
 pytest tests/test_gemini_service.py -v   # timeout, retry classification, repair, quarantine
 ```
 
-**Run the command above yourself and record the real result — do not assume all
-tests pass without running them:**
+**Actual result recorded on 2026-09-09:**
 
 ```
-<PASTE `pytest -v` SUMMARY LINE HERE, e.g. "38 passed in 4.10s">
+39 passed in 1.93s
 ```
 
 Frontend:
@@ -298,16 +302,19 @@ returns `risk_level: "low"` for the injection attempt (i.e., if it simply compli
 python evals/run_eval.py
 ```
 
-**Evaluation score — not run. This has not been generated and must not be assumed.
-Run the command above and paste the real output below, with the date and prompt
-version:**
+**Actual live evaluation recorded on 2026-09-09 against Gemini `gemini-flash-lite-latest`:**
 
 ```
-Date: <run date>
+Date: 2026-09-09
 Prompt version: risk-v1
-Score: <PASTE — e.g. "6/8, 75.0%">
-Failures: <PASTE case ids and expected/received, if any>
+Score: 7/8, 87.5%
+Failures: case-05 — expected data_security, received authentication
 ```
+
+The live FAISS index was built with `models/gemini-embedding-001`. The real API
+request returned HTTP 200 with `high` authorization risk, `requires_review: true`,
+and confidence `0.98`. The one evaluation mismatch is retained honestly for review;
+the result is not presented as a perfect score.
 
 ## Reliability strategy
 
@@ -338,7 +345,7 @@ Every model call (success, retry, or failure) emits one structured JSON log line
 stdout, e.g.:
 
 ```json
-{"event": "llm_call", "prompt_version": "risk-v1", "model": "gemini-2.5-flash", "input_tokens": 812, "output_tokens": 96, "duration_ms": 1830, "repair_count": 0, "status": "success"}
+{"event": "llm_call", "prompt_version": "risk-v1", "model": "gemini-flash-lite-latest", "input_tokens": 1130, "output_tokens": 70, "duration_ms": 2136, "repair_count": 0, "status": "success"}
 ```
 
 `input_tokens`/`output_tokens` come from the response's `usage_metadata`; if a given

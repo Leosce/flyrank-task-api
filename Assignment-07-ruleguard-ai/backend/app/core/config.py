@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=str(BASE_DIR / ".env"), extra="ignore")
 
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.5-flash"
-    embedding_model: str = "models/embedding-001"
+    gemini_model: str = "gemini-flash-lite-latest"
+    embedding_model: str = "models/gemini-embedding-001"
 
     llm_enabled: bool = True
     llm_stub: bool = False

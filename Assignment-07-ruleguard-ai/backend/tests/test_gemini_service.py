@@ -116,3 +116,8 @@ async def test_extract_json_strips_surrounding_code_fence():
     fenced = '```json\n{"risk_level": "low", "category": "other", "requires_review": false, "confidence": 0.6, "reason": "ok"}\n```'
     data = gemini_service._extract_json(fenced)
     assert data["risk_level"] == "low"
+
+
+async def test_content_to_text_handles_current_gemini_blocks():
+    content = [{"type": "text", "text": VALID_JSON, "extras": {"signature": "ignored"}}]
+    assert gemini_service._content_to_text(content) == VALID_JSON

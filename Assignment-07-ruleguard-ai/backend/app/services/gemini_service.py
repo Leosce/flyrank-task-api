@@ -28,7 +28,7 @@ def _get_llm() -> ChatGoogleGenerativeAI:
         _llm = ChatGoogleGenerativeAI(
             model=settings.gemini_model,
             google_api_key=settings.gemini_api_key,
-            temperature=0.1,
+            temperature=0,
         )
     return _llm
 
@@ -62,6 +62,16 @@ def _try_validate(raw_text: str) -> Tuple[Optional[RiskJudgement], Optional[str]
         return RiskJudgement.model_validate(data), None
     except ValidationError as exc:
         return None, f"Schema validation error: {exc.errors()}"
+
+
+def _content_to_text(content: object) -> str:
+    """Normalize LangChain text content across old and current Gemini SDK shapes."""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        text_parts = [item.get("text", "") for item in content if isinstance(item, dict)]
+        return "".join(text_parts)
+    return str(content)
 
 
 def _classify_error(exc: Exception) -> Tuple[bool, bool]:
@@ -100,8 +110,7 @@ async def _call_gemini_once(system_prompt: str, user_message: str) -> Tuple[str,
 
     usage_meta = getattr(response, "usage_metadata", None) or {}
     usage = {"input_tokens": usage_meta.get("input_tokens"), "output_tokens": usage_meta.get("output_tokens")}
-    content = response.content if isinstance(response.content, str) else str(response.content)
-    return content, usage
+    return _content_to_text(response.content), usage
 
 
 async def _call_with_retry(system_prompt: str, user_message: str) -> Tuple[str, dict]:
