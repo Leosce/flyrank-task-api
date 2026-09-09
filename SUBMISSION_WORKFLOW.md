@@ -31,11 +31,7 @@ Completed locally on 2026-09-09. The A7 README contains the real request IDs, st
 
 ## 4. Run A9 against the practice sandbox
 
-1. In `Assignment-05-web-scrapper-fastapi/scraper`, create and activate a virtual environment and run `pip install -r requirements.txt`.
-2. Run `python main.py` once. Confirm `catalogue_pages=3`, `discovered=60`, `unique_urls=60`, and `valid_records=60` in the terminal and `output/run-report.json`.
-3. Run it again and confirm cache-hit messages and no duplicate records.
-4. Run `python main.py --include-broken-url` and confirm one failed page is logged while 60 valid records remain.
-5. Paste the three real run-report excerpts into the A9 README. Never scrape a different target without checking its rules and terms.
+Completed locally on 2026-09-09. The A9 README records the real outcomes: 60 validated, de-duplicated records from three catalogue pages; a 1.81-second cache rerun with 63 cache hits and no live content pages fetched; and the intentionally injected 404 recorded in `errors.json` while all 60 good records remained. The included unit suite also passed (`3 passed`).
 
 ## 5. Verify Gemini-backed projects
 

@@ -26,6 +26,18 @@ The first run fetches and caches each real response; reruns print `CACHE HIT` an
 
 Use `python main.py --include-broken-url` to prove one failed detail URL is recorded while the good records survive.
 
+## Live verification
+
+Verified locally on 2026-09-09 with Python 3.14 and the included test suite (`3 passed`). The target was the documented Books to Scrape practice sandbox only.
+
+| Check | Observed result |
+| --- | --- |
+| Initial collection | 3 catalogue pages, 60 discovered URLs, 60 unique URLs, 60 detail pages, 60 valid records, 0 failed pages |
+| Cache rerun | 60 records with 60 unique URLs; 63 cache hits; 0 live content pages fetched; completed in 1.81 seconds |
+| Failure isolation | Injected `https://books.toscrape.com/catalogue/not-a-real-book/index.html`; 60 valid records remained and `errors.json` recorded one `HTTP Error 404: Not Found` |
+
+The cache rerun also reported `no robots file found`, which is the expected recorded result for the target's `robots.txt` request. The failed-URL run intentionally does not retry the 404, consistent with the retry policy.
+
 ## Output and record shape
 
 - `scraper/output/books.json`: schema-validated, de-duplicated records keyed by absolute product URL.
