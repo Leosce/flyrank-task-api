@@ -16,7 +16,7 @@ function normalizeDecision(answer) {
 }
 
 async function decideWithGemini(prompt, apiKey) {
-  const model = process.env.GEMINI_MODEL || "gemini-2.0-flash";
+  const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
@@ -28,7 +28,7 @@ async function decideWithGemini(prompt, apiKey) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: decisionInstruction }] },
         contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0, maxOutputTokens: 3 },
+        generationConfig: { temperature: 0, maxOutputTokens: 64 },
       }),
     },
   );
@@ -72,7 +72,7 @@ export const executeWorkflow = inngest.createFunction(
   { event: "workflow/execute" },
   async ({ event, step }) => {
     const { runId, nodes, edges, startNodeId } = event.data;
-    markRunRunning(runId);
+    await markRunRunning(runId);
     const nodesById = new Map(nodes.map((node) => [node.id, node]));
     let currentNodeId = startNodeId || nodes[0]?.id;
     const visited = new Set();
@@ -94,9 +94,9 @@ export const executeWorkflow = inngest.createFunction(
         currentNodeId = nextEdge?.target;
       }
       if (currentNodeId) throw new Error("The workflow contains a cycle.");
-      finishRun(runId);
+      await finishRun(runId);
     } catch (error) {
-      failRun(runId, error instanceof Error ? error.message : "Workflow execution failed.");
+      await failRun(runId, error instanceof Error ? error.message : "Workflow execution failed.");
       throw error;
     }
   },

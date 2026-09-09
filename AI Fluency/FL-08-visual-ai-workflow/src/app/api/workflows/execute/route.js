@@ -10,7 +10,7 @@ export async function POST(request) {
   if (validationError) return NextResponse.json({ error: validationError }, { status: 400 });
 
   const runId = crypto.randomUUID();
-  createRun(runId);
+  await createRun(runId);
   await inngest.send({ name: "workflow/execute", data: { runId, nodes, edges, startNodeId } });
   return NextResponse.json({ runId }, { status: 202 });
 }

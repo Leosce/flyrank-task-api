@@ -37,9 +37,8 @@ Completed locally on 2026-09-09. The A9 README records the real outcomes: 60 val
 
 1. Revoke the API key previously pasted in chat and create a replacement in Google AI Studio.
 2. Put the replacement only in ignored local `.env` or `.env.local` files. Never commit it.
-3. For RuleGuard, configure `Assignment-07-ruleguard-ai/backend/.env`, build its FAISS index, run its test suite, then run one real request and the evaluation command from its README.
-4. For Decision Flow Studio, configure `AI Fluency/FL-08-visual-ai-workflow/.env.local`, run the Next.js app and Inngest dev server, then capture one YES and one NO execution path.
-5. Record the actual test/evaluation summaries and screenshots in the relevant READMEs.
+3. Decision Flow Studio was verified locally on 2026-09-09 with real Gemini calls: one completed `YES` support-triage run and one completed `NO` sales-triage run. The project README contains both run IDs and outcomes. Capture the completed execution-log UI manually if portal evidence is required.
+4. RuleGuard is still pending its separate `Assignment-07-ruleguard-ai/backend/.env` file with the replacement `GEMINI_API_KEY`. After that, build its FAISS index, run its test suite, make one real request, and run the evaluation command from its README.
 
 ## 6. Complete the AI Fluency submission items
 
